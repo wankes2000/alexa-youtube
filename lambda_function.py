@@ -273,7 +273,7 @@ def video_search(query):
         q=query,
         part='id,snippet',
         maxResults=50,
-        order='viewCount',
+        regionCode='ES',
         type='video'
         ).execute()
     videos = []
@@ -331,11 +331,11 @@ def get_url_and_title(id):
     print('Getting url for https://www.youtube.com/watch?v='+id)
     try:
         yt=YouTube('https://www.youtube.com/watch?v='+id)
-        first_stream = yt.streams.filter(only_audio=True, subtype='mp4').first()
+        first_stream = yt.streams.filter(only_audio=True).first()
         print(first_stream.url)
         return first_stream.url, yt.title
-    except:
-        print('Unable to get URL for '+id)
+    except Exception as _:
+        logging.exception('Unable to get URL for '+id)
         return get_live_video_url_and_title(id)
 
 def get_live_video_url_and_title(id):
