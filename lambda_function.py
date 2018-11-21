@@ -273,6 +273,7 @@ def video_search(query):
         q=query,
         part='id,snippet',
         maxResults=50,
+        order='viewCount',
         type='video'
         ).execute()
     videos = []
@@ -394,15 +395,15 @@ def search(intent, session):
             next_url, title = get_url_and_title(id)
     next_token = convert_dict_to_token(playlist)
     if playlist_title is None:
-        speech_output = "Playing " + title
+        speech_output = "Reproduciendo " + title
     else:
-        speech_output = "Playing " + playlist_title
+        speech_output = "Reproduciendo " + playlist_title
     card_title = "Youtube"
     return build_response(build_audio_speechlet_response(card_title, speech_output, should_end_session, next_url, next_token))
 
 def stop(intent, session):
     should_end_session = True
-    speech_output = "Pausing"
+    speech_output = "Pausa"
     return build_response(build_stop_speechlet_response(speech_output, should_end_session))
 
 def nearly_finished(event):
@@ -425,7 +426,7 @@ def skip_action(event, skip):
     if title is None:
         speech_output = "There are no more items in the playlist."
         return build_response(build_short_speechlet_response(speech_output, should_end_session))
-    speech_output = 'Playing '+title
+    speech_output = 'Reproduciendo '+title
     return build_response(build_cardless_audio_speechlet_response(speech_output, should_end_session, next_url, next_token))
 
 def resume(event, say_title = False):
@@ -459,20 +460,21 @@ def start_over(event):
     if title is None:
         speech_output = "I wasn't able to play a video."
         return build_response(build_short_speechlet_response(speech_output, should_end_session))
-    speech_output = "Playing " + title    
+    speech_output = "Reproduciendo " + title
     return build_response(build_cardless_audio_speechlet_response(speech_output, should_end_session, next_url, next_token))
 
 def say_video_title(event):
     should_end_session = True
+    print(event)
     if 'token' in event['context']['AudioPlayer']:
         current_token = event['context']['AudioPlayer']['token']
         next_url, next_token, title = get_next_url_and_token(current_token, 0)
         if title is None:
             speech_output = "I can't find out the name of the current video."
         else:
-            speech_output = "Now playing "+title
+            speech_output = "Ahora reproduciendo "+title
     else:
-        speech_output = "Nothing is currently playing."
+        speech_output = "No se esta reproduciendo nada."
     return build_response(build_short_speechlet_response(speech_output, should_end_session))
     
 def convert_token_to_dict(token):

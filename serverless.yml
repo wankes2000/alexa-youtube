@@ -1,0 +1,21 @@
+service: alexa-youtube-lambda
+
+provider:
+  name: aws
+  runtime: python3.6
+  region: eu-west-1
+package:
+  individually: true
+
+plugins:
+  - serverless-python-requirements
+
+functions:
+  alexa_youtube_lambda:
+    name: alexa-youtube-lambda
+    handler: lambda_function.lambda_handler
+    timeout: 600
+    environment:
+      DEVELOPER_KEY: ${opt:youtube-developer-key}
+    events:
+      - alexaSkill: ${opt:alexa-youtube-skill-id}
